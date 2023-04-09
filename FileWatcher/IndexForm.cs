@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
 
 namespace FileWatcher
@@ -38,6 +39,10 @@ namespace FileWatcher
             if (dt.Rows.Count == 1)
             {
                 this.Hide();
+                if (!Directory.Exists($@".\watchingFolder\{User.Username}"))
+                {
+                    Directory.CreateDirectory($@".\watchingFolder\{User.Username}");
+                }
                 new Menu().Show();
             }
             else
@@ -49,6 +54,10 @@ namespace FileWatcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!Directory.Exists(@".\watchingFolder"))
+            {
+                Directory.CreateDirectory(@".\watchingFolder");
+            }
             textBox2.PasswordChar = '*';
         }
 

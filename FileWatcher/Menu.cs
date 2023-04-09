@@ -89,6 +89,7 @@ namespace FileWatcher
                 extAccessBtn.Visible = true;
                 rolesBtn.Visible = true;
             }
+            
         }
 
         private void button6_Click(object sender, EventArgs e)
