@@ -20,8 +20,9 @@ namespace FileWatcher
         private void ContractsForm_Load(object sender, EventArgs e)
         {
             //таблица истории этапов
-            string stagesQuery = $"SELECT Stages.Name, createDate FROM HistoryStages INNER JOIN Stages ON HistoryStages.idStage = Stages.Id WHERE HistoryStages.idContract = {idContract}";
+            string stagesQuery = $"SELECT Stages.Name, createDate FROM HistoryStages INNER JOIN Stages ON HistoryStages.idStage = Stages.Id WHERE HistoryStages.idContract = @idContract";
             SqlCommand stagesCmd = new SqlCommand(stagesQuery, db.getConnection());
+            stagesCmd.Parameters.AddWithValue("@idContract", idContract);
             db.openConnection();
             SqlDataReader stagesReader = stagesCmd.ExecuteReader();
             if (stagesReader.Read())
@@ -32,8 +33,9 @@ namespace FileWatcher
             }
             stagesReader.Close();
             //таблица истории действий
-            string actionsHistoryQuery = $"SELECT idContract as contract, Actions.Name as action, Statuses.Name as status, emailResponsible as responsible, date FROM ActionsHistory INNER JOIN actions ON ActionsHistory.idAction = Actions.id INNER JOIN Statuses ON ActionsHistory.idStatus = Statuses.id where idContract = {idContract}";
+            string actionsHistoryQuery = $"SELECT idContract as contract, Actions.Name as action, Statuses.Name as status, emailResponsible as responsible, date FROM ActionsHistory INNER JOIN actions ON ActionsHistory.idAction = Actions.id INNER JOIN Statuses ON ActionsHistory.idStatus = Statuses.id where idContract = @idContract";
             SqlCommand actionsHistoryCmd = new SqlCommand(actionsHistoryQuery, db.getConnection());
+            actionsHistoryCmd.Parameters.AddWithValue("@idContract", idContract);
             db.openConnection();
             SqlDataReader actionsHistoryReader = actionsHistoryCmd.ExecuteReader();
             if (actionsHistoryReader.Read())
@@ -44,9 +46,10 @@ namespace FileWatcher
             }
             actionsHistoryReader.Close();
             //информация о контракте
-            string contractInfoQuery = $"SELECT contracts.id, createDate, dateEnd, amount, Actions.Name FROM contracts INNER JOIN actions ON contracts.idAction = actions.Id where contracts.id={idContract} ";
+            string contractInfoQuery = $"SELECT contracts.id, createDate, dateEnd, amount, Actions.Name FROM contracts INNER JOIN actions ON contracts.idAction = actions.Id where contracts.id=@idContract ";
             db.openConnection();
             SqlCommand contractInfoCmd = new SqlCommand(contractInfoQuery, db.getConnection());
+            contractInfoCmd.Parameters.AddWithValue("@idContract", idContract);
             SqlDataReader contractInfoReader = contractInfoCmd.ExecuteReader();
             if (contractInfoReader.Read())
             {

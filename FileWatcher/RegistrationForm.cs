@@ -22,11 +22,27 @@ namespace FileWatcher
                 MessageBox.Show("Поля не должны быть пустыми", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            DateTime freeAccessEnd = DateTime.Today;
-            string addNewUser = $"insert into Users (username, email, password, idRole, subscriptionEndDate) values ('{username}', '{email}', '{password}', 1, {freeAccessEnd.AddDays(7).ToString("yyyy-MM-dd")})";
+            DateTime freeAccessEnd = DateTime.Now;
+            string addNewUser = $"insert into Users (username, email, password, idRole, subscriptionEndDate) values (@username, @email, @password, 1, @freeAccessEnd)";
             SqlCommand cmd = new SqlCommand(addNewUser, db.getConnection());
+            cmd.Parameters.AddRange(new SqlParameter[]
+            {
+                new SqlParameter("@username", username),
+                new SqlParameter("@email", email),
+                new SqlParameter("@password", password),
+                new SqlParameter("@freeAccessEnd", freeAccessEnd.AddDays(7).ToString("yyyy-MM-dd")),
+            });
             db.openConnection();
-            cmd.ExecuteNonQuery();
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                db.closeConnection();
+                return;
+            }
             db.closeConnection();
             MessageBox.Show("Вы зарегистрировались", "Success", MessageBoxButtons.OK);
             this.Close();

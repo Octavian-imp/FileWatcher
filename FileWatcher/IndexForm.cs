@@ -20,10 +20,14 @@ namespace FileWatcher
             var passwordUser = textBox2.Text;
             SqlDataAdapter adapter = new SqlDataAdapter();
             DataTable dt = new DataTable();
-
-            string queryString = $"select id, username, password, idRole from users where username='{loginUser}' and password='{passwordUser}'";
+            string queryString = $"select id, username, password, idRole from users where username=@username and password=@password";
             db.openConnection();
             SqlCommand sqlCommand = new SqlCommand(queryString, db.getConnection());
+            sqlCommand.Parameters.AddRange(new SqlParameter[]
+            {
+                new SqlParameter("@username", loginUser),
+                new SqlParameter("@password", passwordUser)
+            });
             SqlDataReader reader = sqlCommand.ExecuteReader();
             if (reader.Read())
             {

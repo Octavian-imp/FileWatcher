@@ -55,8 +55,15 @@ namespace FileWatcher
             if (Double.TryParse(textBox1.Text, out amount))
             {
                 string filePath = $@"{User.rootPath}\{User.Username}\{fileName}";
-                string addNewContract = $"insert into Contracts (path, idAction, amount, dateEnd, idOwner) values ('{filePath}', {idAction}, {amount},'{dateEnd.ToString("yyyy-MM-dd")}', {User.IdUser})";
+                string addNewContract = $"insert into Contracts (path, idAction, amount, dateEnd, idOwner) values (@filePath, @idAction, @amount, @dateEnd, @idUser)";
                 SqlCommand addNewContractCommand = new SqlCommand(addNewContract, db.getConnection());
+                addNewContractCommand.Parameters.AddRange(new SqlParameter[] {
+                    new SqlParameter("@filePath", filePath),
+                    new SqlParameter("@idAction",idAction),
+                    new SqlParameter("@amount",amount),
+                    new SqlParameter("@dateEnd", dateEnd.ToString("yyyy-MM-dd")),
+                    new SqlParameter("@idUser",User.IdUser),
+                });
                 db.openConnection();
                 addNewContractCommand.ExecuteNonQuery();
                 db.closeConnection();

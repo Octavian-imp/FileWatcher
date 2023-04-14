@@ -41,10 +41,25 @@ namespace FileWatcher
             {
                 int idDepartament = departamentField.SelectedIndex + 1;
                 int idStage = stageField.SelectedIndex + 1;
-                string transferContract = $"INSERT INTO HistoryStages (idContract, idStage, idDepartament) VALUES ({idContract}, {idStage}, {idDepartament})";
+                string transferContract = $"INSERT INTO HistoryStages (idContract, idStage, idDepartament) VALUES (@idContract, @idStage, @idDepartament)";
                 SqlCommand transferContractCmd = new SqlCommand(transferContract, db.getConnection());
+                transferContractCmd.Parameters.AddRange(new SqlParameter[]
+                {
+                    new SqlParameter("@idContract", idContract),
+                    new SqlParameter("@idStage", idStage),
+                    new SqlParameter("@idDepartament", idDepartament),
+                });
                 db.openConnection();
-                transferContractCmd.ExecuteNonQuery();
+                try
+                {
+                    transferContractCmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    db.closeConnection();
+                    return;
+                }
                 db.closeConnection();
                 MessageBox.Show($"Контракт переведен в отдел {departamentField.Text} на этап {stageField.Text}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();

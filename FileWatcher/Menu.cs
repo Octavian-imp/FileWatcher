@@ -88,6 +88,7 @@ namespace FileWatcher
                 label4.Visible = true;
                 extAccessBtn.Visible = true;
                 rolesBtn.Visible = true;
+                button7.Visible = true;
             }
             
         }

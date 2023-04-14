@@ -32,8 +32,13 @@ namespace FileWatcher
             if (int.TryParse(textBox1.Text, out id))
             {
                 db.openConnection();
-                string changeRoleUserQuery = $"update users set idRole={comboBox1.SelectedIndex + 1} where id={id}";
+                string changeRoleUserQuery = $"update users set idRole=@idRole where id=@id";
                 SqlCommand cmd = new SqlCommand(changeRoleUserQuery, db.getConnection());
+                cmd.Parameters.AddRange(new SqlParameter[]
+                {
+                    new SqlParameter("@idRole", comboBox1.SelectedIndex + 1),
+                    new SqlParameter("@id", id),
+                });
                 cmd.ExecuteNonQuery();
                 MessageBox.Show($"Права пользователя с id {id} изменены на {comboBox1.SelectedItem}", "Success", MessageBoxButtons.OK);
                 db.closeConnection();

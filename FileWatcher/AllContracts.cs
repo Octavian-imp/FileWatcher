@@ -20,8 +20,9 @@ namespace FileWatcher
 
             SqlDataAdapter adapter = new SqlDataAdapter();
             DataTable dt = new DataTable();
-            string contractsQuery = $"select id, createDate, dateEnd, idAction from contracts where idOwner = {User.IdUser}";
+            string contractsQuery = $"select id, createDate, dateEnd, idAction from contracts where idOwner = @idUser";
             SqlCommand cmd = new SqlCommand(contractsQuery, db.getConnection());
+            cmd.Parameters.AddWithValue("@idUser", User.IdUser);
             adapter.SelectCommand = cmd;
             adapter.Fill(dt);
             db.openConnection();
@@ -36,9 +37,10 @@ namespace FileWatcher
         }
         private void createColumns()
         {
-            string query = $"select Id, createDate, dateEnd, idAction from contracts where idOwner = {User.IdUser} order by createDate asc";
+            string query = $"select Id, createDate, dateEnd, idAction from contracts where idOwner = @idUser order by createDate asc";
             db.openConnection();
             SqlCommand cmd = new SqlCommand(query, db.getConnection());
+            cmd.Parameters.AddWithValue("@idUser", User.IdUser);
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
             {
@@ -53,8 +55,9 @@ namespace FileWatcher
         private void refreshDataGrid(DataGridView dgw)
         {
             dgw.Rows.Clear();
-            string query = $"select Id, createDate, dateEnd, idAction from contracts where idOwner = {User.IdUser} order by createDate asc";
+            string query = $"select Id, createDate, dateEnd, idAction from contracts where idOwner = @idUser order by createDate asc";
             SqlCommand cmd = new SqlCommand(query, db.getConnection());
+            cmd.Parameters.AddWithValue("@idUser", User.IdUser);
             db.openConnection();
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
